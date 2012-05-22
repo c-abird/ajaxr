@@ -1,4 +1,1 @@
-{
-  "main": <%= raw (yield).to_json %>,
-  <%= raw @view_flow.content.map {|k, v| "#{k.to_json}: #{v.to_json}"}.join(",\n") %>
-}
+{<%= raw @view_flow.content.map {|k, v| "#{k.to_json}:#{v.to_json}"}.join(",") %>}

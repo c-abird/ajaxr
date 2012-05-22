@@ -5,7 +5,7 @@ module Ajaxr
     #end
 
     initializer 'ajaxr.asset_pipeline' do |app|
-      #app.config.assets.precompile += %w( oyambre/admin.js oyambre/admin.css )
+      app.config.assets.precompile += %w( ajaxr.js )
 
       # load oymabre.yml
       #config_file = File.join(Rails.root, 'config', 'oyambre.yml')
