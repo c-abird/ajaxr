@@ -15,9 +15,14 @@
     error:      []
   };
 
+  // scroll cache to suppress browser scroll history
+  var scroll;
+
   $.ajaxr = ajaxr = {
     // current absolute url
     currentUrl: $(window.location).attr('href'),
+
+    lastUrl: undefined,
 
     // returns the json URL for a href. may be overridden
     jsonUrl: function(url) {
@@ -27,15 +32,17 @@
     
     // find the first handler matching the urls and calls it
     trigger: function(url, eventType, data) {
-      $.each(handlers[eventType].reverse(), function() {
-        var srcPattern    = this[0],
-            targetPattern = this[1],
-            handler       = this[2];
+      var i = handlers[eventType].length;
+      while(i--) {
+        var item = handlers[eventType][i];
+        var srcPattern    = item[0],
+            targetPattern = item[1],
+            handler       = item[2];
         if (ajaxr.currentUrl.match(srcPattern) && url.match(targetPattern)) {
           data.push(url);
           return handler.apply(this, data);
         }
-      });
+      }
       return true;
     },
 
@@ -69,6 +76,7 @@
         },
         success: function(data, status, xhr) {
           ajaxr.trigger(url, 'success', [data, status, xhr]);
+          //$.ajaxr.currentUrl = url;
         },
         complete: function(xhr, status) {
           ajaxr.trigger(url, 'complete', [xhr, status]);
@@ -89,16 +97,30 @@
     });
   });
 
+  // keep track of scrolling (for browser scoll history suppression)
+  $(window).scroll(function() { scroll = $(window).scrollTop(); });
+
   // bind history handler
   History.Adapter.bind(window,'statechange',function() {
+    // restore the scroll position
+    if (scroll > 0) $(window).scrollTo(scroll);
+    scroll = -1;
+
     var State = History.getState();
     ajaxr.handleRequest(State.url);
+    $.ajaxr.lastUrl    = $.ajaxr.currentUrl;
+    $.ajaxr.currentUrl = State.url;
   });
 
   // register links with remote and history enabled
   $(document).delegate("a[data-remote][data-history]", "ajax:before", function(event) {
+    // reset scroll to suppress scroll history of browser
+    scroll = $(window).scrollTop();
+
     var url = $.rails.href($(this));
+    $(window).scrollTo(0);
     History.pushState(null, null, url);
+
     return false;
   });
 
