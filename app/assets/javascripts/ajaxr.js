@@ -16,7 +16,7 @@
   };
 
   // scroll cache to suppress browser scroll history
-  var scroll;
+  var scroll = 0;
 
   $.ajaxr = ajaxr = {
     // current absolute url
