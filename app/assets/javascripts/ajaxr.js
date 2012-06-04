@@ -103,8 +103,7 @@
   // bind history handler
   History.Adapter.bind(window,'statechange',function() {
     // restore the scroll position
-    if (scroll > 0) $(window).scrollTo(scroll);
-    scroll = -1;
+    $(window).scrollTo(scroll);
 
     var State = History.getState();
     ajaxr.handleRequest(State.url);
@@ -114,11 +113,7 @@
 
   // register links with remote and history enabled
   $(document).delegate("a[data-remote][data-history]", "ajax:before", function(event) {
-    // reset scroll to suppress scroll history of browser
-    scroll = $(window).scrollTop();
-
     var url = $.rails.href($(this));
-    $(window).scrollTo(0);
     History.pushState(null, null, url);
 
     return false;
