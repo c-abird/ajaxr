@@ -76,7 +76,6 @@
         },
         success: function(data, status, xhr) {
           ajaxr.trigger(url, 'success', [data, status, xhr]);
-          //$.ajaxr.currentUrl = url;
         },
         complete: function(xhr, status) {
           ajaxr.trigger(url, 'complete', [xhr, status]);
@@ -103,7 +102,8 @@
   // bind history handler
   History.Adapter.bind(window,'statechange',function() {
     // restore the scroll position
-    $(window).scrollTo(scroll);
+    if (scroll >= 0) $(window).scrollTo(scroll);
+    scroll = 0;
 
     var State = History.getState();
     ajaxr.handleRequest(State.url);
@@ -113,9 +113,9 @@
 
   // register links with remote and history enabled
   $(document).delegate("a[data-remote][data-history]", "ajax:before", function(event) {
+    scroll = -1;
     var url = $.rails.href($(this));
     History.pushState(null, null, url);
-
     return false;
   });
 
