@@ -1,1 +1,1 @@
-{<%= raw @view_flow.content.map {|k, v| "#{k.to_json}:#{v.to_json}"}.join(",") %>}
+{<%= raw @view_flow.content.merge(@ajaxr_data).map {|k, v| "#{k.to_json}:#{v.to_json}"}.join(",") %>}

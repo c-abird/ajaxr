@@ -5,6 +5,7 @@ module Ajaxr
     module InstanceMethods
       def render_for_ajaxr(*args, &block)
         options = _normalize_args(*args, &block)
+        @ajaxr_data = options.delete(:data) || {}
         if (params[:format] || '').to_sym == :json
           options.merge!({
             :layout       => 'ajaxr.json',
