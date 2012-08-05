@@ -114,7 +114,11 @@
   $(document).delegate("a[data-remote][data-history]", "ajax:before", function(event) {
     scroll = -1;
     var url = $.rails.href($(this));
+
+    if ( event.which == 2 || event.metaKey ) { return true; }
+
     History.pushState(null, null, url);
+    event.preventDefault();
     return false;
   });
 
