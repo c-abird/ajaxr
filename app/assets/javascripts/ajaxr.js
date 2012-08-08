@@ -22,12 +22,26 @@
     // current absolute url
     nextUrl: $(window.location).attr('href'),
 
+    // last absolute url
     currentUrl: undefined,
+
+    // block flag
+    blocked: false,
 
     // returns the json URL for a href. may be overridden
     jsonUrl: function(url) {
       // TODO check trailing slash
       return url + ".json";
+    },
+
+    // block
+    block: function() {
+      ajaxr.blocked = true;
+    },
+
+    // release
+    release: function() {
+      ajaxr.blocked = false;
     },
     
     // find the first handler matching the urls and calls it
@@ -112,6 +126,8 @@
 
   // register links with remote and history enabled
   $(document).delegate("a[data-remote][data-history]", "ajax:before", function(event) {
+    if ($.ajaxr.blocked) return false;
+
     scroll = -1;
     var url = $.rails.href($(this));
 
