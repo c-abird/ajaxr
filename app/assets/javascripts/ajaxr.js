@@ -68,14 +68,24 @@
     registerEvent: function(eventType) {
       // TODO error checking, parameter types...
       var sourcePattern, targetPattern, handler;
-      if (arguments.length == 3) {
+      switch(arguments.length) {
+      case 2:
+        sourcePattern = /.*/;
+        targetPattern = /.*/;
+        handler       = arguments[1];
+        break;
+      case 3:
         sourcePattern = /.*/;
         targetPattern = arguments[1];
         handler       = arguments[2];
-      } else if (arguments.length == 4) {
+        break;
+      case 4:
         sourcePattern = arguments[1];
         targetPattern = arguments[2];
         handler       = arguments[3];
+        break;
+      default:
+        throw 'wrong number of arguments';
       }
       handlers[eventType].push([sourcePattern, targetPattern, handler]);
     },
@@ -115,7 +125,7 @@
   // bind history handler
   History.Adapter.bind(window,'statechange',function() {
     // restore the scroll position
-    if (scroll >= 0) $(window).scrollTo(scroll);
+    if (scroll >= 0) $(window).scrollTop(scroll);
     scroll = 0;
 
     var State = History.getState();
